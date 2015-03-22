@@ -1,0 +1,1 @@
+# coffee-lint-plugin
