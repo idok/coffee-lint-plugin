@@ -1,0 +1,65 @@
+<idea-plugin version="2" url="https://github.com/idok/coffee-lint-plugin">
+    <id>com.wix.coffeelint</id>
+    <name>CoffeeLint</name>
+    <version>1.0.0</version>
+    <vendor email="sir_simon_x@yahoo.com" url="https://github.com/idok/coffee-lint-plugin">Ido</vendor>
+    <category>HTML/JavaScript Development</category>
+    <description><![CDATA[
+      CoffeeLint intellij integration.<br>
+      <p>Support displaying CoffeeLint warnings as intellij inspections</p>
+      <p>Support for custom CoffeeLint rules</p>
+      <p>Support for CoffeeLint config annotation and completion</p>
+    ]]></description>
+
+    <change-notes><![CDATA[
+       <p>1.0.0 First version.</p>
+    ]]></change-notes>
+
+    <depends>com.intellij.modules.lang</depends>
+    <!--<depends>com.intellij.modules.platform</depends>-->
+    <depends>org.coffeescript</depends>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="139"/>
+
+    <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <projectService serviceImplementation="com.coffeelint.settings.Settings"/>
+        <projectConfigurable implementation="com.coffeelint.settings.CoffeeLintSettingsPage"/>
+        <localInspection language="CoffeeScript" groupPath="JavaScript" shortName="CoffeeLintInspection"
+                         enabledByDefault="true" level="ERROR"
+                         bundle="com.coffeelint.CoffeeLintBundle"
+                         implementationClass="com.coffeelint.CoffeeLintInspection"
+                         displayName="CoffeeLint" groupKey="coffeelint.inspection.group.name"/>
+        <!--unfair="true" runForWholeFile="true" level="WARNING" -->
+        <externalAnnotator language="CoffeeScript" implementationClass="com.coffeelint.CoffeeLintExternalAnnotator" />
+
+        <!-- annotate .eslintrc -->
+        <projectService serviceImplementation="com.coffeelint.config.CoffeeLintConfigFileListener"/>
+        <!--<fileTypeFactory implementation="com.coffeelint.config.ESLintConfigFileTypeFactory"/>-->
+        <!--<completion.contributor order="first" language="JavaScript" implementationClass="com.coffeelint.config.CoffeeLintConfigFileListener"/>-->
+        <!--<annotator language="JSON" implementationClass="com.coffeelint.config.ESLintConfigAnnotator"/>-->
+    </extensions>
+
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
+
+    <project-components>
+        <!-- Add your project components here -->
+        <component>
+            <implementation-class>com.coffeelint.CoffeeLintProjectComponent</implementation-class>
+        </component>
+    </project-components>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+</idea-plugin>
