@@ -8,7 +8,6 @@
       CoffeeLint intellij integration.<br>
       <p>Support displaying CoffeeLint warnings as intellij inspections</p>
       <p>Support for custom CoffeeLint rules</p>
-      <p>Support for CoffeeLint config annotation and completion</p>
     ]]></description>
 
     <change-notes><![CDATA[
