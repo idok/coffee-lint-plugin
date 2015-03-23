@@ -1,5 +1,6 @@
 package com.coffeelint.cli;
 
+import com.coffeelint.config.CoffeeLintConfigFileType;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
@@ -12,7 +13,6 @@ import java.io.FilenameFilter;
 import java.util.*;
 
 public final class CoffeeLintFinder {
-    public static final String CONFIG_FILE = "coffeelint.json";
     public static final String COFFEE_LINT_BASE_NAME = SystemInfo.isWindows ? "coffeelint.cmd" : "coffeelint";
 
     private CoffeeLintFinder() {
@@ -33,7 +33,7 @@ public final class CoffeeLintFinder {
         FilenameFilter filter = new FilenameFilter() {
             @Override
             public boolean accept(File file, String name) {
-                return name.equals(CONFIG_FILE);
+                return name.equals(CoffeeLintConfigFileType.COFFEE_LINT_CONFIG);
             }
         };
         // return Arrays.asList(files);

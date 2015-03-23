@@ -6,6 +6,7 @@ import com.intellij.openapi.fileTypes.LanguageFileType;
 
 import javax.swing.Icon;
 
+import icons.CoffeescriptIcons;
 import icons.ESLintIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,6 @@ public class CoffeeLintConfigFileType extends LanguageFileType {
 
     @NotNull
     public Icon getIcon() {
-        return ESLintIcons.ESLint;
+        return CoffeescriptIcons.Coffeescript;
     }
 }

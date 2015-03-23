@@ -1,6 +1,5 @@
 package com.coffeelint.settings;
 
-import com.coffeelint.cli.CoffeeLintFinder;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
                 @Storage(id = "default", file = StoragePathMacros.PROJECT_FILE),
                 @Storage(id = "dir", file = StoragePathMacros.PROJECT_CONFIG_DIR + "/coffeelintPlugin.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class Settings implements PersistentStateComponent<Settings> {
-    public String configFile = CoffeeLintFinder.CONFIG_FILE;
+    public String configFile = "";
     public String rulesPath = "";
     public String builtinRulesPath = "";
     public String lintExecutable = "";

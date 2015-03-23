@@ -44,7 +44,7 @@ public class CoffeeLintConfigFileListener {
     }
 
     private void fileChanged(@NotNull VirtualFile file) {
-        if (CoffeeLintConfigFileUtil.isESLintConfigFile(file) && !project.isDisposed()) {
+        if (CoffeeLintConfigFileUtil.isCoffeeLintConfigFile(file) && !project.isDisposed()) {
             restartAnalyzer();
         }
     }
@@ -77,7 +77,7 @@ public class CoffeeLintConfigFileListener {
 
         public void fileCopied(@NotNull VirtualFileCopyEvent event) {
             CoffeeLintConfigFileListener.this.fileChanged(event.getFile());
-            CoffeeLintConfigFileListener.this.fileChanged(event.getOriginalFile());
+//            CoffeeLintConfigFileListener.this.fileChanged(event.getOriginalFile());
         }
     }
 
