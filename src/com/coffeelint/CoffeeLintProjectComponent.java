@@ -1,5 +1,6 @@
 package com.coffeelint;
 
+import com.coffeelint.inspection.CoffeeLintInspection;
 import com.coffeelint.settings.Settings;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
@@ -24,10 +25,10 @@ public class CoffeeLintProjectComponent implements ProjectComponent {
 
     private static final Logger LOG = Logger.getInstance(CoffeeLintBundle.LOG_ID);
 
-    public String eslintRcFile;
+    public String configFile;
     public String customRulesPath;
     public String rulesPath;
-    public String eslintExecutable;
+    public String lintExecutable;
     public String nodeInterpreter;
     public boolean treatAsWarnings;
     public boolean pluginEnabled;
@@ -110,8 +111,8 @@ public class CoffeeLintProjectComponent implements ProjectComponent {
 //                return false;
 //            }
 //        }
-        eslintExecutable = settings.lintExecutable;
-        eslintRcFile = settings.configFile;
+        lintExecutable = settings.lintExecutable;
+        configFile = settings.configFile;
         customRulesPath = settings.rulesPath;
         rulesPath = settings.builtinRulesPath;
         nodeInterpreter = settings.nodeInterpreter;

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
                 @Storage(id = "dir", file = StoragePathMacros.PROJECT_CONFIG_DIR + "/coffeelintPlugin.xml", scheme = StorageScheme.DIRECTORY_BASED)})
 public class Settings implements PersistentStateComponent<Settings> {
     public String configFile = CoffeeLintFinder.CONFIG_FILE;
-    public String rulesPath = "";nit
+    public String rulesPath = "";
     public String builtinRulesPath = "";
     public String lintExecutable = "";
     public String nodeInterpreter;

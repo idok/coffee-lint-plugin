@@ -35,10 +35,10 @@
         <localInspection language="CoffeeScript" groupPath="JavaScript" shortName="CoffeeLintInspection"
                          enabledByDefault="true" level="ERROR"
                          bundle="com.coffeelint.CoffeeLintBundle"
-                         implementationClass="com.coffeelint.CoffeeLintInspection"
+                         implementationClass="com.coffeelint.inspection.CoffeeLintInspection"
                          displayName="CoffeeLint" groupKey="coffeelint.inspection.group.name"/>
         <!--unfair="true" runForWholeFile="true" level="WARNING" -->
-        <externalAnnotator language="CoffeeScript" implementationClass="com.coffeelint.CoffeeLintExternalAnnotator" />
+        <externalAnnotator language="CoffeeScript" implementationClass="com.coffeelint.inspection.CoffeeLintExternalAnnotator" />
 
         <!-- annotate .eslintrc -->
         <projectService serviceImplementation="com.coffeelint.config.CoffeeLintConfigFileListener"/>

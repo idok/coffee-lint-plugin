@@ -8,6 +8,6 @@ out/
 *.iml
 
 ### plugin binary ###
-coffee-lint-plugin.jar
+coffee-lint-plugin.zip
 
 temp

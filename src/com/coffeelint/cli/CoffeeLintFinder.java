@@ -10,18 +10,17 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public final class CoffeeLintFinder {
     public static final String CONFIG_FILE = "coffeelint.json";
-    public static final String ESLINT_BASE_NAME = SystemInfo.isWindows ? "coffeelint.cmd" : "coffeelint";
+    public static final String COFFEE_LINT_BASE_NAME = SystemInfo.isWindows ? "coffeelint.cmd" : "coffeelint";
 
     private CoffeeLintFinder() {
     }
 
     @NotNull
     public static List<File> searchForCoffeeLintExe(File projectRoot) {
-        return NodeFinder.searchAllScopesForBin(projectRoot, ESLINT_BASE_NAME);
+        return NodeFinder.searchAllScopesForBin(projectRoot, COFFEE_LINT_BASE_NAME);
     }
 
     /**

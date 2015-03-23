@@ -1,5 +1,6 @@
-package com.coffeelint;
+package com.coffeelint.inspection;
 
+import com.coffeelint.CoffeeLintBundle;
 import com.coffeelint.settings.CoffeeLintSettingsPage;
 import com.google.common.base.Joiner;
 import com.intellij.codeInspection.*;

@@ -29,9 +29,9 @@ public class CoffeeLintConfigFileListener {
                 public void run() {
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
                         public void run() {
-                            VirtualFileManager.getInstance().addVirtualFileListener(new ESLintConfigFileVfsListener(), CoffeeLintConfigFileListener.this.project);
+                            VirtualFileManager.getInstance().addVirtualFileListener(new CoffeeLintConfigFileVfsListener(), CoffeeLintConfigFileListener.this.project);
                             EditorEventMulticaster multicaster = EditorFactory.getInstance().getEventMulticaster();
-                            multicaster.addDocumentListener(new ESLintConfigFileDocumentListener(), CoffeeLintConfigFileListener.this.project);
+                            multicaster.addDocumentListener(new CoffeeLintConfigFileDocumentListener(), CoffeeLintConfigFileListener.this.project);
                         }
                     });
                 }
@@ -59,8 +59,8 @@ public class CoffeeLintConfigFileListener {
     /**
      * VFS Listener
      */
-    private class ESLintConfigFileVfsListener extends VirtualFileAdapter {
-        private ESLintConfigFileVfsListener() {
+    private class CoffeeLintConfigFileVfsListener extends VirtualFileAdapter {
+        private CoffeeLintConfigFileVfsListener() {
         }
 
         public void fileCreated(@NotNull VirtualFileEvent event) {
@@ -84,8 +84,8 @@ public class CoffeeLintConfigFileListener {
     /**
      * Document Listener
      */
-    private class ESLintConfigFileDocumentListener extends DocumentAdapter {
-        private ESLintConfigFileDocumentListener() {
+    private class CoffeeLintConfigFileDocumentListener extends DocumentAdapter {
+        private CoffeeLintConfigFileDocumentListener() {
         }
 
         public void documentChanged(DocumentEvent event) {

@@ -1,9 +1,12 @@
-package com.coffeelint;
+package com.coffeelint.inspection;
 
+import com.coffeelint.CoffeeLintBundle;
+import com.coffeelint.CoffeeLintProjectComponent;
 import com.coffeelint.cli.CoffeeLint;
 import com.coffeelint.cli.LintResult;
 import com.coffeelint.config.CoffeeLintConfigFileListener;
 import com.coffeelint.cli.CoffeeLintRunner;
+import com.coffeelint.config.CoffeeLintConfigFileUtil;
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
 import com.intellij.codeInsight.daemon.impl.SeverityRegistrar;
 import com.intellij.lang.annotation.Annotation;
@@ -31,6 +34,8 @@ import com.wix.ActualFile;
 import com.wix.ThreadLocalActualFile;
 import com.wix.annotator.ExternalLintAnnotationInput;
 import com.wix.annotator.ExternalLintAnnotationResult;
+import com.wix.annotator.InspectionUtil;
+import com.wix.utils.Delayer;
 import com.wix.utils.FileUtils;
 import com.wix.utils.PsiUtil;
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author idok
@@ -47,26 +53,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
     public static final CoffeeLintExternalAnnotator INSTANCE = new CoffeeLintExternalAnnotator();
     private static final Logger LOG = Logger.getInstance(CoffeeLintBundle.LOG_ID);
     private static final String MESSAGE_PREFIX = "CoffeeLint: ";
-    private static final Key<ThreadLocalActualFile> ESLINT_TEMP_FILE_KEY = Key.create("COFFEE_LINT_TEMP_FILE");
-//    private static final int TABS = 4;
-//    private int tabSize;
-
-//    private static int getTabSize(@NotNull Editor editor) {
-//        // Get tab size
-//        int tabSize = 0;
-//        Project project = editor.getProject();
-//        PsiFile psifile = PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument());
-//        CommonCodeStyleSettings commonCodeStyleSettings = new CommonCodeStyleSettings(psifile.getLanguage());
-//        CommonCodeStyleSettings.IndentOptions indentOptions = commonCodeStyleSettings.getIndentOptions();
-//
-//        if (indentOptions != null) {
-//            tabSize = commonCodeStyleSettings.getIndentOptions().TAB_SIZE;
-//        }
-//        if (tabSize == 0) {
-//            tabSize = editor.getSettings().getTabSize(editor.getProject());
-//        }
-//        return tabSize;
-//    }
+    private static final Key<ThreadLocalActualFile> COFFEE_LINT_TEMP_FILE = Key.create("COFFEE_LINT_TEMP_FILE");
 
     @Nullable
     @Override
@@ -97,7 +84,8 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
         }
         InspectionProjectProfileManager inspectionProjectProfileManager = InspectionProjectProfileManager.getInstance(file.getProject());
         SeverityRegistrar severityRegistrar = inspectionProjectProfileManager.getSeverityRegistrar();
-        HighlightDisplayKey inspectionKey = getHighlightDisplayKeyByClass();
+//        HighlightDisplayKey inspectionKey = getHighlightDisplayKeyByClass();
+//        HighlightSeverity severity = InspectionUtil.getSeverity(inspectionProjectProfileManager, inspectionKey, file);
         EditorColorsScheme colorsScheme = annotationResult.input.colorsScheme;
 
         Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(file);
@@ -158,7 +146,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
 //            range = new TextRange(errorLineStartOffset, errorLineStartOffset + 1);
         }
 
-        Annotation annotation = JSLinterUtil.createAnnotation(holder, severity, forcedTextAttributes, range, MESSAGE_PREFIX + warn.message.trim() + " (" + warn.source + ')');
+        Annotation annotation = InspectionUtil.createAnnotation(holder, severity, forcedTextAttributes, range, MESSAGE_PREFIX + warn.message.trim() + " (" + warn.source + ')');
         if (annotation != null) {
             annotation.setAfterEndOfLine(errorLineStartOffset == lineEndOffset);
         }
@@ -167,7 +155,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
 
     @Nullable
     private static ExternalLintAnnotationInput collectInformation(@NotNull PsiFile psiFile, @Nullable Editor editor) {
-        if (psiFile.getContext() != null || !isJavaScriptFile(psiFile)) {
+        if (psiFile.getContext() != null || !CoffeeLintConfigFileUtil.isCoffeeScriptFile(psiFile)) {
             return null;
         }
         VirtualFile virtualFile = psiFile.getVirtualFile();
@@ -196,16 +184,13 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
         return new ExternalLintAnnotationInput(project, psiFile, fileContent, colorsScheme);
     }
 
-    private static boolean isJavaScriptFile(PsiFile file) {
-        return file.getName().endsWith(".coffee");
-    }
-
     @Nullable
     @Override
     public ExternalLintAnnotationResult<LintResult> doAnnotate(ExternalLintAnnotationInput collectedInfo) {
+        ActualFile actualCodeFile = null;
         try {
             PsiFile file = collectedInfo.psiFile;
-            if (!isJavaScriptFile(file)) return null;
+            if (!CoffeeLintConfigFileUtil.isCoffeeScriptFile(file)) return null;
             CoffeeLintProjectComponent component = file.getProject().getComponent(CoffeeLintProjectComponent.class);
             if (!component.isSettingsValid() || !component.isEnabled()) {
                 return null;
@@ -213,12 +198,12 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
 
             CoffeeLintConfigFileListener.start(collectedInfo.project);
             String relativeFile;
-            ActualFile actualCodeFile = ActualFile.getOrCreateActualFile(ESLINT_TEMP_FILE_KEY, file.getVirtualFile(), collectedInfo.fileContent);
+            actualCodeFile = ActualFile.getOrCreateActualFile(COFFEE_LINT_TEMP_FILE, file.getVirtualFile(), collectedInfo.fileContent);
             if (actualCodeFile == null || actualCodeFile.getFile() == null) {
                 return null;
             }
             relativeFile = FileUtils.makeRelative(new File(file.getProject().getBasePath()), actualCodeFile.getFile());
-            LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.eslintExecutable, component.eslintRcFile, component.customRulesPath);
+            LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.lintExecutable, component.configFile, component.customRulesPath);
 
             actualCodeFile.deleteTemp();
             if (StringUtils.isNotEmpty(result.errorOutput)) {
@@ -227,25 +212,28 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
             }
             Document document = PsiDocumentManager.getInstance(file.getProject()).getDocument(file);
             if (document == null) {
-                component.showInfoNotification("Error running ESLint inspection: Could not get document for file " + file.getName(), NotificationType.WARNING);
+                component.showInfoNotification("Error running CoffeeLint inspection: Could not get document for file " + file.getName(), NotificationType.WARNING);
                 LOG.error("Could not get document for file " + file.getName());
                 return null;
             }
             return new ExternalLintAnnotationResult<LintResult>(collectedInfo, result);
         } catch (Exception e) {
-            LOG.error("Error running ESLint inspection: ", e);
-            CoffeeLintProjectComponent.showNotification("Error running ESLint inspection: " + e.getMessage(), NotificationType.ERROR);
+            LOG.error("Error running CoffeeLint inspection: ", e);
+            showNotification("Error running CoffeeLint inspection: " + e.getMessage(), NotificationType.ERROR);
+        } finally {
+            if (actualCodeFile != null) {
+                actualCodeFile.deleteTemp();
+            }
         }
         return null;
     }
 
-//    static class ESLintAnnotationResult {
-//        public ESLintAnnotationResult(ExternalLintAnnotationInput input, Result result) {
-//            this.input = input;
-//            this.result = result;
-//        }
-//
-//        public final ExternalLintAnnotationInput input;
-//        public final Result result;
-//    }
+    private final Delayer delayer = new Delayer(TimeUnit.SECONDS.toMillis(5L));
+
+    public void showNotification(String content, NotificationType type) {
+        if (delayer.should()) {
+            CoffeeLintProjectComponent.showNotification(content, type);
+            delayer.done();
+        }
+    }
 }

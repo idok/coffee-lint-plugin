@@ -7,6 +7,7 @@ import com.intellij.lang.javascript.psi.JSObjectLiteralExpression;
 import com.intellij.lang.javascript.psi.JSProperty;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ObjectUtils;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,10 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class CoffeeLintConfigFileUtil {
     private CoffeeLintConfigFileUtil() {
+    }
+
+    public static boolean isCoffeeScriptFile(PsiFile file) {
+        return file.getName().endsWith(".coffee");
     }
 
     public static boolean isESLintConfigFile(JSFile file) {

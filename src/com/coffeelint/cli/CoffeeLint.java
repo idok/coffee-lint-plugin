@@ -23,6 +23,9 @@ public class CoffeeLint {
         xstream.useAttributeFor(Issue.class, "severity");
         xstream.useAttributeFor(Issue.class, "message");
         CoffeeLint lint = (CoffeeLint) xstream.fromXML(xml);
+        if (lint.file == null) {
+            lint.file = new File();
+        }
         if (lint.file.errors == null) {
             lint.file.errors = new ArrayList<Issue>();
         }
