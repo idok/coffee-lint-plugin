@@ -93,7 +93,7 @@ public class CoffeeLintProjectComponent implements ProjectComponent {
         if (!status) {
             return false;
         }
-        status = validateField("ESLint bin", settings.lintExecutable, false, false, true);
+        status = validateField("CoffeeLint bin", settings.lintExecutable, false, false, true);
         if (!status) {
             return false;
         }
