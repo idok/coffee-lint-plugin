@@ -97,15 +97,15 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
             HighlightSeverity severity = getHighlightSeverity(warn, component.treatAsWarnings);
             TextAttributes forcedTextAttributes = JSLinterUtil.getTextAttributes(colorsScheme, severityRegistrar, severity);
             Annotation annotation = createAnnotation(holder, file, document, warn, severity, forcedTextAttributes, false);
-            if (annotation != null) {
-                int offset = StringUtil.lineColToOffset(document.getText(), warn.line - 1, warn.column);
-                PsiElement lit = PsiUtil.getElementAtOffset(file, offset);
+//            if (annotation != null) {
+//                int offset = StringUtil.lineColToOffset(document.getText(), warn.line - 1, warn.column);
+//                PsiElement lit = PsiUtil.getElementAtOffset(file, offset);
 //                BaseActionFix actionFix = Fixes.getFixForRule(warn.rule, lit);
 //                if (actionFix != null) {
 //                    annotation.registerFix(actionFix, null, inspectionKey);
 //                }
 //                annotation.registerFix(new SuppressActionFix(warn.rule, lit), null, inspectionKey);
-            }
+//            }
         }
     }
 
@@ -121,7 +121,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
                                                @NotNull HighlightSeverity severity, @Nullable TextAttributes forcedTextAttributes,
                                                boolean showErrorOnWholeLine) {
         int line = warn.line - 1;
-        int column = warn.column /*- 1*/;
+//        int column = warn.column /*- 1*/;
 
         if (line < 0 || line >= document.getLineCount()) {
             return null;
@@ -129,27 +129,27 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
         int lineEndOffset = document.getLineEndOffset(line);
         int lineStartOffset = document.getLineStartOffset(line);
 
-        int errorLineStartOffset = StringUtil.lineColToOffset(document.getCharsSequence(),  line, column);
+//        int errorLineStartOffset = StringUtil.lineColToOffset(document.getCharsSequence(),  line, column);
 //        int errorLineStartOffset = PsiUtil.calcErrorStartOffsetInDocument(document, lineStartOffset, lineEndOffset, column, tab);
 
-        if (errorLineStartOffset == -1) {
-            return null;
-        }
+//        if (errorLineStartOffset == -1) {
+//            return null;
+//        }
 //        PsiElement element = file.findElementAt(errorLineStartOffset);
         TextRange range;
-        if (showErrorOnWholeLine) {
+//        if (showErrorOnWholeLine) {
             range = new TextRange(lineStartOffset, lineEndOffset);
-        } else {
-//            int offset = StringUtil.lineColToOffset(document.getText(), warn.line - 1, warn.column);
-            PsiElement lit = PsiUtil.getElementAtOffset(file, errorLineStartOffset);
-            range = lit.getTextRange();
+//        } else {
+////            int offset = StringUtil.lineColToOffset(document.getText(), warn.line - 1, warn.column);
+//            PsiElement lit = PsiUtil.getElementAtOffset(file, errorLineStartOffset);
+//            range = lit.getTextRange();
 //            range = new TextRange(errorLineStartOffset, errorLineStartOffset + 1);
-        }
+//        }
 
         Annotation annotation = InspectionUtil.createAnnotation(holder, severity, forcedTextAttributes, range, MESSAGE_PREFIX + warn.message.trim() + " (" + warn.source + ')');
-        if (annotation != null) {
-            annotation.setAfterEndOfLine(errorLineStartOffset == lineEndOffset);
-        }
+//        if (annotation != null) {
+//            annotation.setAfterEndOfLine(errorLineStartOffset == lineEndOffset);
+//        }
         return annotation;
     }
 

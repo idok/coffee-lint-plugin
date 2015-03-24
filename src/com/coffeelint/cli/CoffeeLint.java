@@ -19,7 +19,7 @@ public class CoffeeLint {
         xstream.useAttributeFor(File.class, "name");
         xstream.useAttributeFor(Issue.class, "source");
         xstream.useAttributeFor(Issue.class, "line");
-        xstream.useAttributeFor(Issue.class, "column");
+//        xstream.useAttributeFor(Issue.class, "column");
         xstream.useAttributeFor(Issue.class, "severity");
         xstream.useAttributeFor(Issue.class, "message");
         CoffeeLint lint = (CoffeeLint) xstream.fromXML(xml);
@@ -40,7 +40,7 @@ public class CoffeeLint {
     public static class Issue {
         public String source;
         public int line;
-        public int column;
+//        public int column;
         public String severity;
         public String message;
     }

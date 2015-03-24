@@ -51,7 +51,7 @@ public final class CoffeeLintRunner {
             commandLine.addParameter("--reporter");
             commandLine.addParameter("checkstyle");
             ProcessOutput out = NodeRunner.execute(commandLine, TIME_OUT);
-            if (out.getExitCode() != 0) {
+//            if (out.getExitCode() != 0) {
                 result.errorOutput = out.getStderr();
                 try {
                     result.coffeeLint = CoffeeLint.read(out.getStdout());
@@ -59,7 +59,9 @@ public final class CoffeeLintRunner {
                     LOG.error(e);
                     //result.errorOutput = out.getStdout();
                 }
-            }
+//            } else {
+//                LOG.debug("");
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             result.errorOutput = e.toString();
