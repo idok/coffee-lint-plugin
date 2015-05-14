@@ -3,9 +3,9 @@ package com.coffeelint.inspection;
 import com.coffeelint.CoffeeLintBundle;
 import com.coffeelint.CoffeeLintProjectComponent;
 import com.coffeelint.cli.CoffeeLint;
+import com.coffeelint.cli.CoffeeLintRunner;
 import com.coffeelint.cli.LintResult;
 import com.coffeelint.config.CoffeeLintConfigFileListener;
-import com.coffeelint.cli.CoffeeLintRunner;
 import com.coffeelint.config.CoffeeLintConfigFileUtil;
 import com.intellij.codeInsight.daemon.HighlightDisplayKey;
 import com.intellij.codeInsight.daemon.impl.SeverityRegistrar;
@@ -28,16 +28,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.profile.codeInspection.InspectionProjectProfileManager;
 import com.intellij.psi.MultiplePsiFilesPerDocumentFileViewProvider;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.wix.ActualFile;
+import com.wix.ActualFile2;
 import com.wix.ThreadLocalActualFile;
+import com.wix.ThreadLocalTempActualFile;
 import com.wix.annotator.ExternalLintAnnotationInput;
 import com.wix.annotator.ExternalLintAnnotationResult;
 import com.wix.annotator.InspectionUtil;
 import com.wix.utils.Delayer;
 import com.wix.utils.FileUtils;
-import com.wix.utils.PsiUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
     public static final CoffeeLintExternalAnnotator INSTANCE = new CoffeeLintExternalAnnotator();
     private static final Logger LOG = Logger.getInstance(CoffeeLintBundle.LOG_ID);
     private static final String MESSAGE_PREFIX = "CoffeeLint: ";
-    private static final Key<ThreadLocalActualFile> COFFEE_LINT_TEMP_FILE = Key.create("COFFEE_LINT_TEMP_FILE");
+    private static final Key<ThreadLocalTempActualFile> COFFEE_LINT_TEMP_FILE = Key.create("COFFEE_LINT_TEMP_FILE");
 
     @Nullable
     @Override
@@ -187,7 +187,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
     @Nullable
     @Override
     public ExternalLintAnnotationResult<LintResult> doAnnotate(ExternalLintAnnotationInput collectedInfo) {
-        ActualFile actualCodeFile = null;
+        ActualFile2 actualCodeFile = null;
         try {
             PsiFile file = collectedInfo.psiFile;
             if (!CoffeeLintConfigFileUtil.isCoffeeScriptFile(file)) return null;
@@ -198,11 +198,11 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
 
             CoffeeLintConfigFileListener.start(collectedInfo.project);
             String relativeFile;
-            actualCodeFile = ActualFile.getOrCreateActualFile(COFFEE_LINT_TEMP_FILE, file.getVirtualFile(), collectedInfo.fileContent);
-            if (actualCodeFile == null || actualCodeFile.getFile() == null) {
+            actualCodeFile = ActualFile2.getOrCreateActualFile(COFFEE_LINT_TEMP_FILE, file, collectedInfo.fileContent);
+            if (actualCodeFile == null || actualCodeFile.getActualFile() == null) {
                 return null;
             }
-            relativeFile = FileUtils.makeRelative(new File(file.getProject().getBasePath()), actualCodeFile.getFile());
+            relativeFile = FileUtils.makeRelative(new File(file.getProject().getBasePath()), actualCodeFile.getActualFile());
             LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.lintExecutable, component.configFile, component.customRulesPath);
 
             actualCodeFile.deleteTemp();
