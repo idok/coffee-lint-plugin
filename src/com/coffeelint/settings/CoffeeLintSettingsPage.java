@@ -5,7 +5,7 @@ import com.coffeelint.cli.CoffeeLintFinder;
 import com.coffeelint.cli.CoffeeLintRunner;
 import com.intellij.codeInsight.daemon.DaemonCodeAnalyzer;
 import com.intellij.execution.ExecutionException;
-import com.intellij.javascript.nodejs.NodeDetectionUtil;
+//import com.intellij.javascript.nodejs.NodeDetectionUtil;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
@@ -20,6 +20,7 @@ import com.intellij.ui.TextFieldWithHistoryWithBrowseButton;
 import com.intellij.util.NotNullProducer;
 import com.intellij.util.ui.UIUtil;
 import com.intellij.webcore.ui.SwingHelper;
+import com.wix.nodejs.NodeDetectionUtil;
 import com.wix.settings.ValidationInfo;
 import com.wix.ui.PackagesNotificationPanel;
 import com.wix.utils.FileUtils;
@@ -57,9 +58,9 @@ public class CoffeeLintSettingsPage implements Configurable {
     private JLabel rulesDirectoryLabel;
     private JLabel pathToCoffeelintBinLabel;
     private JLabel nodeInterpreterLabel;
-//    private JCheckBox treatAllLintIssuesCheckBox;
     private JLabel versionLabel;
-//    private TextFieldWithHistoryWithBrowseButton rulesPathField;
+    private JTextField extensionsField;
+    //    private TextFieldWithHistoryWithBrowseButton rulesPathField;
 //    private JLabel rulesDirectoryLabel1;
     private final PackagesNotificationPanel packagesNotificationPanel;
 
@@ -134,7 +135,7 @@ public class CoffeeLintSettingsPage implements Configurable {
         rulesDirectoryLabel.setEnabled(enabled);
         pathToCoffeelintBinLabel.setEnabled(enabled);
         nodeInterpreterLabel.setEnabled(enabled);
-//        treatAllLintIssuesCheckBox.setEnabled(enabled);
+        extensionsField.setEnabled(enabled);
     }
 
     private void validateField(List<ValidationInfo> errors, TextFieldWithHistoryWithBrowseButton field, boolean allowEmpty, String message) {
@@ -304,6 +305,7 @@ public class CoffeeLintSettingsPage implements Configurable {
                 !areEqual(nodeInterpreterField, s.nodeInterpreter) ||
 //                treatAllLintIssuesCheckBox.isSelected() != s.treatAllIssuesAsWarnings ||
                 !customRulesPathField.getText().equals(s.rulesPath) ||
+                !extensionsField.getText().equals(s.extensions) ||
 //                !areEqual(rulesPathField, s.builtinRulesPath) ||
                 !getConfigFile().equals(s.configFile);
     }
@@ -325,6 +327,7 @@ public class CoffeeLintSettingsPage implements Configurable {
         settings.nodeInterpreter = nodeInterpreterField.getChildComponent().getText();
         settings.configFile = getConfigFile();
         settings.rulesPath = customRulesPathField.getText();
+        settings.extensions = extensionsField.getText();
 //        settings.builtinRulesPath = rulesPathField.getChildComponent().getText();
 //        settings.treatAllIssuesAsWarnings = treatAllLintIssuesCheckBox.isSelected();
         project.getComponent(CoffeeLintProjectComponent.class).validateSettings();
@@ -338,6 +341,7 @@ public class CoffeeLintSettingsPage implements Configurable {
         eslintrcFile.getChildComponent().setText(settings.configFile);
         nodeInterpreterField.getChildComponent().setText(settings.nodeInterpreter);
         customRulesPathField.setText(settings.rulesPath);
+        extensionsField.setText(settings.extensions);
 //        rulesPathField.getChildComponent().setText(settings.builtinRulesPath);
         useProjectEslintrcRadioButton.setSelected(StringUtils.isNotEmpty(settings.configFile));
         searchForEslintrcInRadioButton.setSelected(StringUtils.isEmpty(settings.configFile));

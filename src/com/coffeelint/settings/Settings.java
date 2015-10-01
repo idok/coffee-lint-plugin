@@ -13,6 +13,7 @@ public class Settings implements PersistentStateComponent<Settings> {
     public String configFile = "";
     public String rulesPath = "";
     public String builtinRulesPath = "";
+    public String extensions = "";
     public String lintExecutable = "";
     public String nodeInterpreter;
     public boolean treatAllIssuesAsWarnings;
@@ -38,6 +39,6 @@ public class Settings implements PersistentStateComponent<Settings> {
     }
 
     public String getVersion() {
-        return nodeInterpreter + lintExecutable + configFile + rulesPath + builtinRulesPath;
+        return nodeInterpreter + lintExecutable + configFile + rulesPath + builtinRulesPath + extensions;
     }
 }

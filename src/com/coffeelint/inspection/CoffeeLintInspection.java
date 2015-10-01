@@ -7,7 +7,6 @@ import com.intellij.codeInspection.*;
 import com.intellij.codeInspection.ex.UnfairLocalInspectionTool;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.actions.ShowSettingsUtilImpl;
-import com.intellij.lang.javascript.JSBundle;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.diagnostic.Logger;
@@ -31,7 +30,7 @@ import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
 import java.util.List;
 
-public class CoffeeLintInspection extends LocalInspectionTool implements BatchSuppressableTool, UnfairLocalInspectionTool { //extends PropertySuppressableInspectionBase {
+public class CoffeeLintInspection extends LocalInspectionTool implements UnfairLocalInspectionTool { //extends PropertySuppressableInspectionBase {
 
     public static final String INSPECTION_SHORT_NAME = "CoffeeLintInspection";
     public static final Key<CoffeeLintInspection> KEY = Key.create(INSPECTION_SHORT_NAME);
@@ -74,7 +73,8 @@ public class CoffeeLintInspection extends LocalInspectionTool implements BatchSu
 
     @NotNull
     private HyperlinkLabel createHyperLink() {
-        List path = ContainerUtil.newArrayList(JSBundle.message("settings.javascript.root.configurable.name"), JSBundle.message("settings.javascript.linters.configurable.name"), getDisplayName());
+//        List path = ContainerUtil.newArrayList(JSBundle.message("settings.javascript.root.configurable.name"), JSBundle.message("settings.javascript.linters.configurable.name"), getDisplayName());
+        List path = ContainerUtil.newArrayList("JavaScript", CoffeeLintBundle.message("coffeelint.inspection.group.name"), getDisplayName());
 
         String title = Joiner.on(" / ").join(path);
         final HyperlinkLabel settingsLink = new HyperlinkLabel(title);

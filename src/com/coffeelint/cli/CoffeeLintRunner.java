@@ -24,24 +24,26 @@ public final class CoffeeLintRunner {
         public String node;
         public String executablePath;
         public String rules;
+        public String extensions;
         public String config;
         public String cwd;
         public String targetFile;
     }
 
-    public static CoffeeLintSettings buildSettings(@NotNull String cwd, @NotNull String path, @NotNull String node, @NotNull String executable, @Nullable String configFile, @Nullable String rulesdir) {
+    public static CoffeeLintSettings buildSettings(@NotNull String cwd, @NotNull String path, @NotNull String node, @NotNull String executable, @Nullable String configFile, @Nullable String rulesdir, @Nullable String extensions) {
         CoffeeLintSettings settings = new CoffeeLintSettings();
         settings.cwd = cwd;
         settings.executablePath = executable;
         settings.node = node;
         settings.rules = rulesdir;
+        settings.extensions = extensions;
         settings.config = configFile;
         settings.targetFile = path;
         return settings;
     }
 
-    public static LintResult lint(String cwd, String file, String node, String lintBin, String executable, String customRulesPath) {
-        return lint(buildSettings(cwd, file, node, lintBin, executable, customRulesPath));
+    public static LintResult lint(String cwd, String file, String node, String lintBin, String executable, String customRulesPath, @Nullable String extensions) {
+        return lint(buildSettings(cwd, file, node, lintBin, executable, customRulesPath, extensions));
     }
 
     public static LintResult lint(@NotNull CoffeeLintSettings settings) {
@@ -99,14 +101,20 @@ public final class CoffeeLintRunner {
         GeneralCommandLine commandLine = createCommandLine(settings);
         // TODO validate arguments (file exist etc)
         commandLine.addParameter(settings.targetFile);
-        if (StringUtil.isNotEmpty(settings.config)) {
-            commandLine.addParameter("-f");
-            commandLine.addParameter(settings.config);
-        }
-        if (StringUtil.isNotEmpty(settings.rules)) {
-            commandLine.addParameter("--rules");
-            commandLine.addParameter(settings.rules);
-        }
+        addParamIfNotEmpty(commandLine, "-f", settings.config);
+        addParamIfNotEmpty(commandLine, "--rules", settings.rules);
+        addParamIfNotEmpty(commandLine, "--ext", settings.extensions);
         return commandLine;
+    }
+
+    private static void addParam(GeneralCommandLine commandLine, String name, String value) {
+        commandLine.addParameter(name);
+        commandLine.addParameter(value);
+    }
+
+    private static void addParamIfNotEmpty(GeneralCommandLine commandLine, String name, String value) {
+        if (StringUtil.isNotEmpty(value)) {
+            addParam(commandLine, name, value);
+        }
     }
 }

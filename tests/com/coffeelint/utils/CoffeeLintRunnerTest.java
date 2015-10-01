@@ -1,5 +1,6 @@
 package com.coffeelint.utils;
 
+import com.coffeelint.TestUtils;
 import com.coffeelint.cli.CoffeeLintRunner;
 import com.coffeelint.cli.LintResult;
 import com.intellij.execution.ExecutionException;
@@ -11,11 +12,12 @@ public class CoffeeLintRunnerTest {
 
     public static final String NODE_INTERPRETER = "/usr/local/bin/node";
     public static final String COFFEE_LINT_BIN = "/usr/local/bin/coffeelint";
-    public static final String COFFEE_LINT_PLUGIN_ROOT = "/Users/idok/Projects/coffee-lint-plugin";
-    public static final String TEST_DATA = COFFEE_LINT_PLUGIN_ROOT + "/testData";
+//    public static final String COFFEE_LINT_PLUGIN_ROOT = "/Users/idok/Projects/coffee-lint-plugin";
+//    public static final String TEST_DATA = COFFEE_LINT_PLUGIN_ROOT + "/testData";
+    public static final String TEST_DATA = TestUtils.getTestDataPath();
 
     private static CoffeeLintRunner.CoffeeLintSettings createSettings(String targetFile) {
-        return CoffeeLintRunner.buildSettings(COFFEE_LINT_PLUGIN_ROOT, targetFile, NODE_INTERPRETER, COFFEE_LINT_BIN, "", "");
+        return CoffeeLintRunner.buildSettings(TEST_DATA, targetFile, NODE_INTERPRETER, COFFEE_LINT_BIN, "", "", null);
     }
 
     private static CoffeeLintRunner.CoffeeLintSettings createSettings() {

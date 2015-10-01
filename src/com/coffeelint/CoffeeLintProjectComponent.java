@@ -26,6 +26,7 @@ public class CoffeeLintProjectComponent implements ProjectComponent {
     private static final Logger LOG = Logger.getInstance(CoffeeLintBundle.LOG_ID);
 
     public String configFile;
+    public String extensions;
     public String customRulesPath;
     public String rulesPath;
     public String lintExecutable;
@@ -118,6 +119,7 @@ public class CoffeeLintProjectComponent implements ProjectComponent {
         nodeInterpreter = settings.nodeInterpreter;
         treatAsWarnings = settings.treatAllIssuesAsWarnings;
         pluginEnabled = settings.pluginEnabled;
+        extensions = settings.extensions;
 
 //        RuleCache.initializeFromPath(project, this);
 

@@ -13,7 +13,6 @@ import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.lang.annotation.HighlightSeverity;
-import com.intellij.lang.javascript.linter.JSLinterUtil;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
@@ -95,7 +94,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
         CoffeeLintProjectComponent component = annotationResult.input.project.getComponent(CoffeeLintProjectComponent.class);
         for (CoffeeLint.Issue warn : annotationResult.result.coffeeLint.file.errors) {
             HighlightSeverity severity = getHighlightSeverity(warn, component.treatAsWarnings);
-            TextAttributes forcedTextAttributes = JSLinterUtil.getTextAttributes(colorsScheme, severityRegistrar, severity);
+            TextAttributes forcedTextAttributes = InspectionUtil.getTextAttributes(colorsScheme, severityRegistrar, severity);
             Annotation annotation = createAnnotation(holder, file, document, warn, severity, forcedTextAttributes, false);
 //            if (annotation != null) {
 //                int offset = StringUtil.lineColToOffset(document.getText(), warn.line - 1, warn.column);
@@ -203,7 +202,7 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
                 return null;
             }
             relativeFile = FileUtils.makeRelative(new File(file.getProject().getBasePath()), actualCodeFile.getActualFile());
-            LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.lintExecutable, component.configFile, component.customRulesPath);
+            LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.lintExecutable, component.configFile, component.customRulesPath, component.extensions);
 
             actualCodeFile.deleteTemp();
             if (StringUtils.isNotEmpty(result.errorOutput)) {
