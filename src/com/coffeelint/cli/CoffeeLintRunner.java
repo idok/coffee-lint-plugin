@@ -42,16 +42,15 @@ public final class CoffeeLintRunner {
         return settings;
     }
 
-    public static LintResult lint(String cwd, String file, String node, String lintBin, String executable, String customRulesPath, @Nullable String extensions) {
-        return lint(buildSettings(cwd, file, node, lintBin, executable, customRulesPath, extensions));
+    public static LintResult lint(@NotNull String cwd, @NotNull String path, @NotNull String node, @NotNull String executable, @Nullable String configFile, @Nullable String rulesdir, @Nullable String extensions) {
+        return lint(buildSettings(cwd, path, node, executable, configFile,  rulesdir, extensions));
     }
 
     public static LintResult lint(@NotNull CoffeeLintSettings settings) {
         LintResult result = new LintResult();
         try {
             GeneralCommandLine commandLine = createCommandLineLint(settings);
-            commandLine.addParameter("--reporter");
-            commandLine.addParameter("checkstyle");
+            addParam(commandLine, "--reporter", "checkstyle");
             ProcessOutput out = NodeRunner.execute(commandLine, TIME_OUT);
 //            if (out.getExitCode() != 0) {
                 result.errorOutput = out.getStderr();

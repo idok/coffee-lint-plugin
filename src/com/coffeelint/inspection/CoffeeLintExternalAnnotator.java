@@ -202,6 +202,10 @@ public class CoffeeLintExternalAnnotator extends ExternalAnnotator<ExternalLintA
                 return null;
             }
             relativeFile = FileUtils.makeRelative(new File(file.getProject().getBasePath()), actualCodeFile.getActualFile());
+            if (relativeFile == null) {
+                LOG.error("Error running CoffeeLint inspection: relative file path is null");
+                return null;
+            }
             LintResult result = CoffeeLintRunner.lint(file.getProject().getBasePath(), relativeFile, component.nodeInterpreter, component.lintExecutable, component.configFile, component.customRulesPath, component.extensions);
 
             actualCodeFile.deleteTemp();
