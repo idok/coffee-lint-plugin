@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/idok/coffee-lint-plugin">
     <id>com.wix.coffeelint</id>
     <name>CoffeeLint</name>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <vendor email="sir_simon_x@yahoo.com" url="https://github.com/idok">Ido</vendor>
     <category>HTML/JavaScript Development</category>
     <description><![CDATA[
@@ -11,6 +11,7 @@
     ]]></description>
 
     <change-notes><![CDATA[
+       <p>1.0.5 Bug fixes.</p>
        <p>1.0.4 Add --ext CLI option to include additional file extension.</p>
        <p>1.0.3 Use temp folder for temp files.</p>
        <p>1.0.2 Bug fixes.</p>
